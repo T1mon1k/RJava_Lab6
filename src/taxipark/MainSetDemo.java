@@ -1,3 +1,7 @@
+package taxipark;
+
+import java.util.List;
+
 /**
  * Лабораторна робота №6.
  * <p>
@@ -10,19 +14,20 @@
  * Порахувати вартість автопарку. Провести сортування автомобілів парку за витратами палива.
  * Знайти автомобіль у компанії, що відповідає заданому діапазону швидкості автомобіля. (C13 = 9). <br>
  * Завдання для ЛР6: <br>
- * Інтерфейс, який реалізує колекція: Set (C2 = 1). <br>
+ * Інтерфейс, який реалізує колекція: {@code Set} (C2 = 1). <br>
  * Внутрішня структура колекції: Масив із початковою кількістю елементів 15 та збільшенням кількості
  * елементів на 30% (C3 = 0). <br>
  * <p>
- * Клас Main запускає виконання Лабораторної роботи 5. <br>
- * Клас MainSetDemo запускає виконання Лабораторної роботи 6. <br>
+ * Клас {@code Main} запускає виконання Лабораторної роботи 5. <br>
+ * Клас {@code MainSetDemo} запускає виконання Лабораторної роботи 6,
+ * показуючи роботу власної реалізації множини {@link ArrayTaxiSet}. <br>
  */
-
-package taxipark;
-
-import java.util.List;
-
 public class MainSetDemo {
+    /**
+     * Точка входу в програму. Демонструє роботу з власною колекцією
+     * {@link ArrayTaxiSet}: створення трьох множин, наповнення об'єктами,
+     * видалення, очищення та використання методів {@code contains}, {@code containsAll}, {@code isEmpty}.
+     */
     public static void main(String[] args) {
         Car c1 = new EconomyCar("Toyota", "Yaris", 2018, 175, 5.5, 11500, false);
         Car c2 = new PremiumCar("Audi", "A8 L 55 TFSI", 2020, 250, 8.0, 80000, true);
@@ -45,16 +50,19 @@ public class MainSetDemo {
         Car c19 = new BusinessCar("Nissan", "Teana", 2018, 210, 7.4, 23000, false);
         Car c20 = new EconomyCar("Volkswagen", "Polo", 2020, 178, 5.4, 11800, false);
 
+        // 1) Множина set1 — створена порожнім конструктором і заповнена вручну
         ArrayTaxiSet<Car> set1 = new ArrayTaxiSet<>();
         set1.add(c1); set1.add(c2); set1.add(c3); set1.add(c4); set1.add(c5); set1.add(c6); set1.add(c7); set1.add(c8);
         set1.add(c9); set1.add(c10); set1.add(c11); set1.add(c12); set1.add(c13); set1.add(c14); set1.add(c15);
-        set1.add(c16); set1.add(c17);
+        set1.add(c16); set1.add(c17); // додаємо більше 15 елементів, щоб продемонструвати збільшення масиву
 
+        // 2) Множина set2 — створена конструктором з одним елементом
         ArrayTaxiSet<Car> set2 = new ArrayTaxiSet<>(c4);
-        set2.add(c5); set2.add(c1); set2.add(c4); set2.add(c18); set2.add(c19); set2.add(c20);
+        set2.add(c5); set2.add(c1); set2.add(c4); set2.add(c18); set2.add(c19); set2.add(c20); // є дубль, але не буде доданий
 
+        // 3) Множина set3 — створена зі стандартної колекції (List.of)
         ArrayTaxiSet<Car> set3 = new ArrayTaxiSet<>(List.of(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c5));
-        set3.add(c20); set3.add(c19);
+        set3.add(c20); set3.add(c19); // теж є дубль, який не додасться
 
         System.out.println("---------------------------------------   Set 1: Базовий" +
                 "   --------------------------------------");
@@ -88,6 +96,9 @@ public class MainSetDemo {
                 "   ----------------------------");
     }
 
+    /**
+     * Виводить вміст множини {@link ArrayTaxiSet} у вигляді вирівняної таблиці.
+     */
     private static void printSet(ArrayTaxiSet<Car> set) {
         System.out.println("-------------------------------------   Розмір множини: " + set.size() +
                 "   ------------------------------------");
@@ -109,6 +120,9 @@ public class MainSetDemo {
         }
     }
 
+    /**
+     * Повертає назву типу автомобіля для відображення в таблиці.
+     */
     private static String getCarType(Car c) {
         return switch (c.getClass().getSimpleName()) {
             case "EconomyCar" -> "Економ";

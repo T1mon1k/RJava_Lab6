@@ -2,26 +2,59 @@ package taxipark;
 
 import java.util.*;
 
+/**
+ * Власна типізована колекція-множина на основі масиву,
+ * що реалізує інтерфейс Set.
+ * <p>
+ * Колекція зберігає лише унікальні посилання на об'єкти типу {@code T extends Car}.
+ * Внутрішня структура – масив із початковою місткістю 15 елементів.
+ * Якщо під час додавання елементів місця не вистачає, місткість
+ * збільшується на 30% від поточного розміру.
+ */
 public class ArrayTaxiSet<T extends Car> implements Set<T> {
+    /**
+     * Початкова місткість внутрішнього масиву.
+     */
     private static final int DEFAULT_CAPACITY = 15;
     private T[] elements;
     private int size = 0;
 
+    /**
+     * Порожній конструктор.
+     * <p>
+     * Створює порожню множину з початковою місткістю #DEFAULT_CAPACITY елементів.
+     */
     @SuppressWarnings("unchecked")
     public ArrayTaxiSet() {
         elements = (T[]) new Car[DEFAULT_CAPACITY];
     }
 
+    /**
+     * Конструктор, що створює множину з одним елементом.
+     * @param singleElement елемент, який буде доданий до множини
+     */
     public ArrayTaxiSet(T singleElement) {
         this();
         add(singleElement);
     }
 
+    /**
+     * Конструктор, що створює множину з елементів стандартної колекції.
+     * Дублікати не додаються (відповідно до семантики Set).
+     * @param collection вихідна колекція елементів
+     */
     public ArrayTaxiSet(Collection<? extends T> collection) {
         this();
         addAll(collection);
     }
 
+    /**
+     * Забезпечує достатню місткість внутрішнього масиву для збереження
+     * щонайменше {@code minCapacity} елементів.
+     * <p>
+     * Якщо поточна місткість менша за потрібну, вона збільшується
+     * приблизно на 30% від поточного розміру.
+     */
     private void ensureCapacity(int minCapacity) {
         if (elements.length >= minCapacity) return;
 
@@ -38,7 +71,9 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         elements = Arrays.copyOf(elements, newCapacity);
     }
 
-
+    /**
+     * Повертає індекс першого входження об'єкта в масив, або -1, якщо елемент не знайдено.
+     */
     private int indexOf(Object o) {
         if (o == null) return -1;
         for (int i = 0; i < size; i++) {
@@ -49,6 +84,9 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         return -1;
     }
 
+    /**
+     * Видаляє елемент за заданим індексом із внутрішнього масиву зі зсувом усіх наступних елементів вліво.
+     */
     private void removeAt(int index) {
         int numMoved = size - index - 1;
         if (numMoved > 0) {
@@ -57,31 +95,49 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         elements[--size] = null;
     }
 
+    /**
+     * Повертає кількість елементів у множині.
+     */
     @Override
     public int size() {
         return size;
     }
 
+    /**
+     * Повертає true, якщо множина порожня.
+     */
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
+    /**
+     * Перевіряє, чи містить множина переданий елемент.
+     */
     @Override
     public boolean contains(Object o) {
         return indexOf(o) >= 0;
     }
 
+    /**
+     * Створює та повертає новий ітератор для обходу множини.
+     */
     @Override
     public Iterator<T> iterator() {
         return new ArrayTaxiSetIterator();
     }
 
+    /**
+     * Повертає масив об'єктів, що містяться у множині.
+     */
     @Override
     public Object[] toArray() {
         return Arrays.copyOf(elements, size);
     }
 
+    /**
+     * Копіює елементи множини у переданий масив або створює новий, якщо переданий замалий.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <E> E[] toArray(E[] a) {
@@ -95,6 +151,9 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         return a;
     }
 
+    /**
+     * Додає елемент до множини, якщо він ще не присутній.
+     */
     @Override
     public boolean add(T t) {
         if (t == null) {
@@ -108,6 +167,9 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         return true;
     }
 
+    /**
+     * Видаляє елемент з множини, якщо він присутній.
+     */
     @Override
     public boolean remove(Object o) {
         int idx = indexOf(o);
@@ -116,6 +178,9 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         return true;
     }
 
+    /**
+     * Перевіряє, чи містить множина всі елементи переданої колекції.
+     */
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object o : c) {
@@ -124,6 +189,9 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         return true;
     }
 
+    /**
+     * Додає усі елементи колекції до множини (без дублювання).
+     */
     @Override
     public boolean addAll(Collection<? extends T> c) {
         boolean modified = false;
@@ -135,6 +203,9 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         return modified;
     }
 
+    /**
+     * Видаляє всі елементи множини, яких немає у переданій колекції.
+     */
     @Override
     public boolean retainAll(Collection<?> c) {
         boolean modified = false;
@@ -148,6 +219,9 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         return modified;
     }
 
+    /**
+     * Видаляє всі елементи множини, які присутні у переданій колекції.
+     */
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean modified = false;
@@ -162,6 +236,10 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         return modified;
     }
 
+
+    /**
+     * Очищає множину, видаляючи всі елементи.
+     */
     @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
@@ -170,7 +248,9 @@ public class ArrayTaxiSet<T extends Car> implements Set<T> {
         size = 0;
     }
 
-
+    /**
+     * Внутрішній ітератор для обходу елементів {@link ArrayTaxiSet}.
+     */
     private class ArrayTaxiSetIterator implements Iterator<T> {
         private int cursor = 0;
         private int lastReturned = -1;
